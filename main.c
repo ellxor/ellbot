@@ -4,11 +4,14 @@
 int
 main(int argc, char **argv)
 {
-        int socket;
+        IRC irc = {0};
 
-        irc_connect(&socket);
-        puts("Connection successful!");
-        irc_disconnect(&socket);
+        irc_connect(&irc);
+
+        puts("SSL Connection successful!");
+        printf("%d | %p\n", irc.socket, irc.ssl);
+
+        irc_disconnect(&irc);
 
         return 0;
 }

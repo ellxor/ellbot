@@ -1,6 +1,21 @@
 #pragma once
+
+#undef _POSIX_C_SOURCE
+#define _POSIX_C_SOURCE 200112L
+
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
 #define HOST "irc.chat.twitch.tv"
 #define PORT "6697"
+#define ADDR HOST":"PORT
 
-int irc_connect(int *socket_ptr);
-void irc_disconnect(int *socket_ptr);
+typedef struct
+{
+        int socket;
+        SSL *ssl;
+}
+IRC;
+
+int irc_connect(IRC *irc);
+void irc_disconnect(IRC *irc);
