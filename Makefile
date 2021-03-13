@@ -1,7 +1,9 @@
 CC = clang
 
 CFLAGS = -O3 -s
-DEBUG = -O2 -fsanitize=undefined
+DEBUG = -O2 -fsanitize=undefined -Wall -Wextra
 
-default:; $(CC) *.c -o main $(CFLAGS)
-debug:; $(CC) *.c -o main $(DEBUG)
+OBJS = -lssl -lcrypto
+
+default:; $(CC) *.c -o main $(CFLAGS) $(OBJS)
+debug:; $(CC) *.c -o main $(DEBUG) $(OBJS)
