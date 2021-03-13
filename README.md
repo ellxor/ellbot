@@ -1,5 +1,5 @@
-ellbot is a twitch bot written in pure C.
+ellbot is a twitch bot written in pure C.  
 
-dependencies:
-. POSIX
-. OPENSSL
+dependencies:  
+. posix  
+. openssl  
