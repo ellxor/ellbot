@@ -119,8 +119,8 @@ irc_disconnect(IRC *irc)
 {
         if (irc->ssl != NULL)
         {
-                SSL_set_shutdown(irc->ssl, SSL_RECEIVED_SHUTDOWN
-                                         | SSL_SENT_SHUTDOWN);
+                SSL_set_shutdown(irc->ssl, SSL_SENT_SHUTDOWN
+                                         | SSL_RECEIVED_SHUTDOWN);
                 SSL_shutdown(irc->ssl);
                 SSL_free(irc->ssl);
         }
