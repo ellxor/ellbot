@@ -1,4 +1,5 @@
 #include "bot.h"
+#include "config.h"
 
 #include <stdio.h>
 #include <time.h>
@@ -76,7 +77,7 @@ handle_message(IRC *irc, SV sender, SV message)
 
                 else if (sv_eq(command, SV("halt")))
                 {
-                        if (sv_eq(user, SV("ellxor")))
+                        if (sv_eq(user, SV(NICK)))
                         {
                                 printf("Shutting bot down...\n");
                                 return -1;
