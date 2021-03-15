@@ -10,6 +10,11 @@ sv_from(const char *str, int count)
 SV
 chop(SV *sv, int i)
 {
+        if (i > sv->count)
+        {
+                i = sv->count;
+        }
+
         SV result = sv_from(sv->mem, i);
 
         sv->mem += i;
@@ -19,18 +24,38 @@ chop(SV *sv, int i)
 }
 
 SV
+chop_right(SV *sv, int i)
+{
+        if (i > sv->count)
+        {
+                i = sv->count;
+        }
+        
+        sv->count -= i;
+
+        SV result = sv_from(sv->mem + sv->count, i - sv->count);
+        return result;
+}
+
+SV
 chop_by_delim(SV *sv, char delim)
 {
         SV result = sv_from(sv->mem, 0);
 
         while (*sv->mem != delim)
         {
-               sv->mem++;
-               sv->count--;
+                if (sv->count == 0)
+                {
+                        break;
+                }
+
+                sv->mem++;
+                sv->count--;
         }
 
         result.count = sv->mem - result.mem;
         sv->mem++;
+        sv->count--;
 
         return result;
 }
@@ -38,13 +63,20 @@ chop_by_delim(SV *sv, char delim)
 int
 expect(SV *sv, SV e)
 {
+        if (e.count > sv->count)
+        {
+                return -1;
+        }
+
         for (int i = 0; i < e.count; i++)
         {
-                if (*sv->mem != e.mem[i])
+                if (sv->mem[i] != e.mem[i])
                 {
                         return -1;
                 }
         }
 
+        sv->mem += e.count;
+        sv->count -= e.count;
         return 0;
 }

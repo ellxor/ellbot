@@ -15,8 +15,7 @@ main(int argc, char **argv)
                 exit(-1);
         };
 
-        puts("SSL Connection successful!");
-        printf("%d | %p\n", irc.socket, irc.ssl);
+        puts("Connected to Twitch!\n");
 
         SV channel  = SV("JOIN "CHANNEL"\n");
         SV nickname = SV("NICK "USER"\n");
@@ -35,13 +34,28 @@ main(int argc, char **argv)
                 size = irc_read(&irc, buffer, sizeof(buffer));
                 if (size)
                 {
-                        SV data = sv_from(buffer, size);
-                        printf("\n\nRead %d bytes:\n", size);
-                        printf("%.*s", data.count, data.mem);
+                        SV message = sv_from(buffer, size);
+                        SV username = chop_by_delim(&message, ' ');
+                        SV command = chop_by_delim(&message, ' ');
+
+                        //"skip channel"
+                        chop_by_delim(&message, ' ');
+
+                        if (expect(&username, SV(":"))       < 0 ||
+                            expect(&command,  SV("PRIVMSG")) < 0 ||
+                            expect(&message,  SV(":"))       < 0)
+                        {
+                                continue;
+                        }
+
+                        //"remove trailing \r\n"
+                        chop_right(&message, 2);
+
+                        printf("'%.*s': '%.*s'\n", sv_arg(username), sv_arg(message));
                         count++;
                 }
         }
-        while (count < 10);
+        while (count < 20);
 
         irc_disconnect(&irc);
         return 0;
