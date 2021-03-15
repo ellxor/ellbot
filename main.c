@@ -1,6 +1,8 @@
 #include <stdio.h>
+
 #include "config.h"
 #include "irc.h"
+#include "stringview.h"
 
 int
 main(int argc, char **argv)
@@ -16,13 +18,13 @@ main(int argc, char **argv)
         puts("SSL Connection successful!");
         printf("%d | %p\n", irc.socket, irc.ssl);
 
-        #define channel "JOIN "CHANNEL"\n"
-        #define nickname "NICK "USER"\n"
-        #define password "PASS "PASS"\n"
+        SV channel  = SV("JOIN "CHANNEL"\n");
+        SV nickname = SV("NICK "USER"\n");
+        SV password = SV("PASS "PASS"\n");
 
-        SSL_write(irc.ssl, password, sizeof(password) - 1);
-        SSL_write(irc.ssl, nickname, sizeof(nickname) - 1);
-        SSL_write(irc.ssl, channel, sizeof(channel) - 1);
+        irc_send(&irc, password);
+        irc_send(&irc, nickname);
+        irc_send(&irc, channel);
 
         char buffer[4096] = {0};
         int count = 0;
@@ -30,15 +32,20 @@ main(int argc, char **argv)
 
         do
         {
-                size = SSL_read(irc.ssl, buffer, sizeof(buffer));
+                size = irc_read(&irc, buffer, sizeof(buffer));
                 if (size)
                 {
+                        SV data = sv_from(buffer, size);
                         printf("\n\nRead %d bytes:\n", size);
-                        printf("%.*s", size, buffer);
+                        printf("%.*s", data.count, data.mem);
                         count++;
                 }
+
+                // EXAMPLE MESSAGE:
+                //"Read 88 bytes:"
+                //":syphoxy!syphoxy@syphoxy.tmi.twitch.tv PRIVMSG #tsoding :inb4 \"why not copy and paste\""
         }
-        while (count < 6);
+        while (count < 10);
 
         irc_disconnect(&irc);
         return 0;

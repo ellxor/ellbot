@@ -127,3 +127,15 @@ irc_disconnect(IRC *irc)
 
         close(irc->socket);
 }
+
+int
+irc_send(IRC *irc, SV sv)
+{
+        return SSL_write(irc->ssl, sv.mem, sv.count);
+}
+
+int
+irc_read(IRC *irc, char *buffer, int count)
+{
+        return SSL_read(irc->ssl, buffer, count);
+}

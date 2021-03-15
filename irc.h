@@ -5,6 +5,7 @@
 
 #include <openssl/ssl.h>
 #include <openssl/err.h>
+#include "stringview.h"
 
 #define HOST "irc.chat.twitch.tv"
 #define PORT "6697"
@@ -19,3 +20,6 @@ IRC;
 
 int irc_connect(IRC *irc);
 void irc_disconnect(IRC *irc);
+
+int irc_send(IRC *irc, SV sv);
+int irc_read(IRC *irc, char *buffer, int count);
