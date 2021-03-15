@@ -40,10 +40,6 @@ main(int argc, char **argv)
                         printf("%.*s", data.count, data.mem);
                         count++;
                 }
-
-                // EXAMPLE MESSAGE:
-                //"Read 88 bytes:"
-                //":syphoxy!syphoxy@syphoxy.tmi.twitch.tv PRIVMSG #tsoding :inb4 \"why not copy and paste\""
         }
         while (count < 10);
 
