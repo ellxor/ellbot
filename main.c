@@ -8,6 +8,12 @@
 int
 main(int argc, char **argv)
 {
+        if (argc < 2)
+        {
+                puts("usage: ./ellbot <channel>");
+                return 0;
+        }
+
         IRC irc = {0};
 
         if (irc_connect(&irc) == -1)
@@ -16,17 +22,27 @@ main(int argc, char **argv)
                 exit(-1);
         };
 
-        irc.channel = SV(CHANNEL);
 
-        puts("Connected to Twitch!\n");
+        char chan_buffer[100] = "#";
+        int len = 1;
 
-        SV     join = SV("JOIN "CHANNEL"\n");
-        SV nickname = SV("NICK "USER"\n");
+        len += snprintf(chan_buffer + 1,
+                        sizeof(chan_buffer) - 1,
+                        "%s", argv[1]);
+
+        irc.channel = sv_from(chan_buffer, len);
+        printf("Channel = `%.*s`\n", sv_arg(irc.channel));
+
+        SV nickname = SV("NICK "NICK"\n");
         SV password = SV("PASS "PASS"\n");
 
         irc_send(&irc, password);
         irc_send(&irc, nickname);
-        irc_send(&irc, join);
+        irc_send(&irc, SV("JOIN "));
+        irc_send(&irc, irc.channel);
+        irc_send(&irc, SV("\n"));
+
+        puts("Connected to Twitch!\n");
 
         char buffer[4096] = {0};
         int size = 0;

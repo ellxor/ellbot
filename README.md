@@ -7,7 +7,6 @@ dependencies:
   
 config.h:
 ```
-#define USER <nickname>
+#define NICK <nickname>
 #define PASS <oath>
-#define CHANNEL <channel>
 ```
