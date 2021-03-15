@@ -74,7 +74,7 @@ handle_message(IRC *irc, SV sender, SV message)
                         irc_send_message(irc, sv_from(buffer, strlen(buffer)));
                 }
 
-                else if (sv_eq(command, SV("leave")))
+                else if (sv_eq(command, SV("halt")))
                 {
                         if (sv_eq(user, SV("ellxor")))
                         {
