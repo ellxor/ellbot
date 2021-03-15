@@ -1,4 +1,4 @@
-#include "stringview.h"
+#include "sv.h"
 
 SV
 sv_from(const char *str, int count)
@@ -41,11 +41,13 @@ SV
 chop_by_delim(SV *sv, char delim)
 {
         SV result = sv_from(sv->mem, 0);
+        int end = 0;
 
         while (*sv->mem != delim)
         {
                 if (sv->count == 0)
                 {
+                        end = 1; 
                         break;
                 }
 
@@ -54,14 +56,37 @@ chop_by_delim(SV *sv, char delim)
         }
 
         result.count = sv->mem - result.mem;
-        sv->mem++;
-        sv->count--;
+
+        if (end == 0)
+        {
+                sv->mem++;
+                sv->count--;
+        }
 
         return result;
 }
 
 int
-expect(SV *sv, SV e)
+sv_eq(SV a, SV b)
+{
+        if (a.count != b.count)
+        {
+                return 0;
+        }
+        
+        for (int i = 0; i < a.count; i++)
+        {
+                if (a.mem[i] != b.mem[i])
+                {
+                        return 0;
+                }
+        }
+
+        return 1;
+}
+
+int
+sv_expect(SV *sv, SV e)
 {
         if (e.count > sv->count)
         {
