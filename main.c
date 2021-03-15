@@ -1,8 +1,9 @@
 #include <stdio.h>
 
+#include "bot.h"
 #include "config.h"
 #include "irc.h"
-#include "stringview.h"
+#include "sv.h"
 
 int
 main(int argc, char **argv)
@@ -15,20 +16,20 @@ main(int argc, char **argv)
                 exit(-1);
         };
 
+        irc.channel = SV(CHANNEL);
+
         puts("Connected to Twitch!\n");
 
-        SV channel  = SV("JOIN "CHANNEL"\n");
+        SV     join = SV("JOIN "CHANNEL"\n");
         SV nickname = SV("NICK "USER"\n");
         SV password = SV("PASS "PASS"\n");
 
         irc_send(&irc, password);
         irc_send(&irc, nickname);
-        irc_send(&irc, channel);
+        irc_send(&irc, join);
 
         char buffer[4096] = {0};
-        int count = 0;
         int size = 0;
-        int exit = 0;
 
         do
         {
@@ -37,36 +38,31 @@ main(int argc, char **argv)
                 {
                         SV message = sv_from(buffer, size);
 
-                        if (expect(&message, SV("PING")) == 0)
+                        if (sv_expect(&message, SV("PING")) == 0)
                         {
-                                printf("Server pinged!\n");
-                                printf("Response = `PONG%.*s`\n", sv_arg(message));
-
+                                puts("Server pinged and bot ponged!");
                                 irc_send(&irc, SV("PONG"));
                                 irc_send(&irc, message);
-
                                 continue;
                         }
 
                         SV username = chop_by_delim(&message, ' ');
                         SV command = chop_by_delim(&message, ' ');
                         chop_by_delim(&message, ' '); //"skip channel"
+                        chop_right(&message, 2);
 
-                        if (expect(&username, SV(":"))       < 0 ||
-                            expect(&command,  SV("PRIVMSG")) < 0 ||
-                            expect(&message,  SV(":"))       < 0)
+                        if (sv_expect(&username, SV(":"))       < 0 ||
+                            sv_expect(&command,  SV("PRIVMSG")) < 0 ||
+                            sv_expect(&message,  SV(":"))       < 0)
                         {
                                 continue;
                         }
 
-                        //"remove trailing \r\n"
-                        chop_right(&message, 2);
-
-                        printf("'%.*s': '%.*s'\n\n", sv_arg(username), sv_arg(message));
-                        count++;
+                        int code = handle_message(&irc, username, message);
+                        if (code == -1) break;
                 }
         }
-        while (exit == 0);
+        while (1);
 
         irc_disconnect(&irc);
         return 0;
