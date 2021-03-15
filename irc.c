@@ -139,3 +139,13 @@ irc_read(IRC *irc, char *buffer, int count)
 {
         return SSL_read(irc->ssl, buffer, count);
 }
+
+void
+irc_send_message(IRC *irc, SV msg)
+{
+        irc_send(irc, SV("PRIVMSG "));
+        irc_send(irc, irc->channel);
+        irc_send(irc, SV(" :"));
+        irc_send(irc, msg);
+        irc_send(irc, SV("\r\n"));
+}
