@@ -28,6 +28,7 @@ main(int argc, char **argv)
         char buffer[4096] = {0};
         int count = 0;
         int size = 0;
+        int exit = 0;
 
         do
         {
@@ -35,11 +36,21 @@ main(int argc, char **argv)
                 if (size)
                 {
                         SV message = sv_from(buffer, size);
+
+                        if (expect(&message, SV("PING")) == 0)
+                        {
+                                printf("Server pinged!\n");
+                                printf("Response = `PONG%.*s`\n", sv_arg(message));
+
+                                irc_send(&irc, SV("PONG"));
+                                irc_send(&irc, message);
+
+                                continue;
+                        }
+
                         SV username = chop_by_delim(&message, ' ');
                         SV command = chop_by_delim(&message, ' ');
-
-                        //"skip channel"
-                        chop_by_delim(&message, ' ');
+                        chop_by_delim(&message, ' '); //"skip channel"
 
                         if (expect(&username, SV(":"))       < 0 ||
                             expect(&command,  SV("PRIVMSG")) < 0 ||
@@ -51,11 +62,11 @@ main(int argc, char **argv)
                         //"remove trailing \r\n"
                         chop_right(&message, 2);
 
-                        printf("'%.*s': '%.*s'\n", sv_arg(username), sv_arg(message));
+                        printf("'%.*s': '%.*s'\n\n", sv_arg(username), sv_arg(message));
                         count++;
                 }
         }
-        while (count < 20);
+        while (exit == 0);
 
         irc_disconnect(&irc);
         return 0;
