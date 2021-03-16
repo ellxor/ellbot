@@ -1,1 +1,1 @@
-clang *.c -o ellbot -O3 -s -fsanitize=undefined -lssl -lcrypto
+clang *.c -o ellbot -lssl -lcrypto -fsanitize=undefined
