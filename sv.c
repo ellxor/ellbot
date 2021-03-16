@@ -105,3 +105,15 @@ sv_expect(SV *sv, SV e)
         sv->count -= e.count;
         return 0;
 }
+
+uint32_t
+sv_hash(SV sv)
+{
+        uint32_t hash = 0x1505;
+        for (int i = 0; i < sv.count; i++)
+        {
+                hash = (hash << 5) + hash + sv.mem[i];
+        }
+
+        return hash;
+}

@@ -1,5 +1,6 @@
 #pragma once
 #include <string.h>
+#include <stdint.h>
 
 typedef struct
 {
@@ -17,3 +18,4 @@ SV chop_right(SV *sv, int i);
 SV chop_by_delim(SV *sv, char delim);
 int sv_eq(SV a, SV b);
 int sv_expect(SV *sv, SV e);
+uint32_t sv_hash(SV sv);
