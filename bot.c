@@ -140,59 +140,39 @@ wttr(IRC *irc, SV sender, SV arg)
 }
 
 static int
-_rnd(IRC *irc, SV sender, SV arg)
+_rnd(IRC *irc, SV sender, SV args)
 {
-        SV arg1 = chop_by_delim(&arg, ' ');
-        SV arg2 = chop_by_delim(&arg, ' ');
+        SV arg = chop_by_delim(&args, ' ');
+        uint32_t min = 0, max = 0, count = 0;
 
-        if (arg1.count == 0)
+        while (arg.count > 0 && count < 2)
+        {
+                if ((min = max, max = sv_parse_uint(arg)) == -1)
+                {
+                        irc_send_message(irc, SV("error: invalid int"));
+                        return 0;
+                }
+
+                arg = chop_by_delim(&args, ' ');
+                count++;
+        }
+
+        if (count == 0)
         {
                 irc_send_message(irc,
                         SV("error: `rand` expects 1-2 args\n"));
                 return 0;
         }
 
-        uint32_t min = 0;
-        uint32_t max = sv_parse_uint(arg1);
-
-        if (max == -1)
-        {
-                goto error;
-        }
-
-        if (arg2.count > 0)
-        {
-                min = max;
-                max = sv_parse_uint(arg2);
-
-                if (max == -1)
-                {
-                        arg1 = arg2;
-                        goto error;
-                }
-        }
-
-        uint32_t range = max - min;
-
         srand(time(NULL));
         double r = (double)rand() / RAND_MAX;
-        uint32_t s = min + r * (range + 0.99);
+        uint32_t s = min + r * (0.99 + max - min);
 
-        char buffer[100];
-        int len = snprintf(buffer, sizeof(buffer),
-                           "%d\n", s);
+        char buffer[20];
+        int len = sprintf(buffer, "%d\n", s);
 
         irc_send_message(irc, sv_from(buffer, len));
         return 0;
-
-error:
-        {
-                char buffer[100];
-                int len = snprintf(buffer, sizeof (buffer),
-                                   "invalid int: `%.*s`\n", sv_arg(arg1));
-                irc_send_message(irc, sv_from(buffer, len));
-                return 0;
-        }
 }
 
 static int
