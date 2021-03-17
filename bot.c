@@ -143,13 +143,12 @@ static int
 _rnd(IRC *irc, SV sender, SV arg)
 {
         SV arg1 = chop_by_delim(&arg, ' ');
-        SV arg2 = arg;
+        SV arg2 = chop_by_delim(&arg, ' ');
 
         if (arg1.count == 0)
         {
                 irc_send_message(irc,
                         SV("error: `rand` expects 1-2 args\n"));
-
                 return 0;
         }
 
