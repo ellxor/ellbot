@@ -106,6 +106,24 @@ sv_expect(SV *sv, SV e)
         return 0;
 }
 
+uint32_t sv_parse_uint(SV sv)
+{
+        uint32_t res = 0;
+
+        for (int i = 0; i < sv.count; i++)
+        {
+                char c = sv.mem[i];
+                if (!('0' <= c && c <= '9'))
+                {
+                        return -1;
+                }
+
+                res = 10 * res + c - '0';
+        }
+
+        return res;
+}
+
 uint32_t
 sv_hash(SV sv)
 {
