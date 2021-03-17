@@ -1,4 +1,4 @@
-ellbot is a twitch bot written in pure C.  
+ellbot is a twitch bot written in c.  
 
 dependencies:  
 . libcurl  
