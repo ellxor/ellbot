@@ -22,7 +22,6 @@ main(int argc, char **argv)
                 exit(-1);
         };
 
-
         char chan_buffer[100] = "#";
         int len = 1;
 
