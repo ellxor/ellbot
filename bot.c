@@ -1,6 +1,8 @@
 #include "bot.h"
 #include "config.h"
 
+#include <assert.h>
+#include <curl/curl.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -91,6 +93,19 @@ date(IRC *irc, SV sender, SV arg)
         return 0;
 }
 
+static size_t
+curl_callback(char *ptr, size_t size, size_t nmemb, void *data)
+{
+        assert(size == 1 && "size must be 1");
+
+        SV *sv = (SV *)data;
+        sv->mem = ptr;
+        sv->count = nmemb;
+
+        return nmemb;
+}
+
+
 static int
 wttr(IRC *irc, SV sender, SV arg)
 {
@@ -100,34 +115,24 @@ wttr(IRC *irc, SV sender, SV arg)
                 arg = SV("london");
         }
 
-        char cmd[50];
-        char buffer[100];
-
-        if (arg.count > 20)
+        CURL *curl = curl_easy_init();
+        if (curl != NULL)
         {
-                irc_send_message(irc, SV("error: invalid location"));
-                return 0;
+                char url[100] = {0};
+                snprintf(url, sizeof(url),
+                         "https://wttr.in/%.*s?format=4", sv_arg(arg));
+
+                SV data = {0};
+
+                curl_easy_setopt(curl, CURLOPT_URL, url);
+                curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback);
+                curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
+                curl_easy_perform(curl);
+                curl_easy_cleanup(curl);
+
+                irc_send_message(irc, data);
         }
 
-        for (int i = 0; i < arg.count; i++)
-        {
-                char c = arg.mem[i];
-                if (!(('a' <= c && c <= 'z') || c == ' '))
-                {
-                        irc_send_message(irc, SV("error: invalid location"));
-                        return 0;
-                }
-        }
-
-        snprintf(cmd, sizeof(cmd),
-                 "curl -s 'wttr.in/%.*s?format=4'",
-                 sv_arg(arg));
-
-        FILE *proc = popen(cmd, "r");
-        fgets(buffer, sizeof(buffer), proc);
-        pclose(proc);
-
-        irc_send_message(irc, sv_from(buffer, strlen(buffer)));
         return 0;
 }
 
