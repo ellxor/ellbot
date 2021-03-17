@@ -16,7 +16,8 @@ static int date(IRC *irc, SV sender, SV arg);
 static int wttr(IRC *irc, SV sender, SV arg);
 static int halt(IRC *irc, SV sender, SV arg);
 
-static struct command COMMANDS[64] =
+static struct command
+COMMANDS[64] =
 {
         [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x23] = {.name = SV("date"), .action = date},
