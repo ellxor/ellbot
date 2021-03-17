@@ -101,6 +101,7 @@ wttr(IRC *irc, SV sender, SV arg)
         char cmd[500];
         char buffer[500];
 
+        // TODO: "sanitize input: urgent!"
         snprintf(cmd, sizeof(cmd),
                  "curl -s 'wttr.in/%.*s?format=4'",
                  sv_arg(arg));
