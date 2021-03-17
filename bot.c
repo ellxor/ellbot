@@ -16,6 +16,7 @@ static int cmds(IRC *irc, SV sender, SV arg);
 static int ping(IRC *irc, SV sender, SV arg);
 static int date(IRC *irc, SV sender, SV arg);
 static int wttr(IRC *irc, SV sender, SV arg);
+static int _rnd(IRC *irc, SV sender, SV arg);
 static int halt(IRC *irc, SV sender, SV arg);
 
 static struct command
@@ -23,6 +24,7 @@ COMMANDS[64] =
 {
         [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x23] = {.name = SV("date"), .action = date},
+        [0x2A] = {.name = SV("rand"), .action = _rnd},
         [0x2E] = {.name = SV("halt"), .action = halt},
         [0x33] = {.name = SV("ping"), .action = ping},
         [0x36] = {.name = SV("wttr"), .action = wttr},
@@ -111,8 +113,9 @@ wttr(IRC *irc, SV sender, SV arg)
 {
         if (arg.count == 0)
         {
-                //"set default loc to london"
-                arg = SV("london");
+                irc_send_message(irc,
+                        SV("error: `wttr` expects 1 arg\n"));
+                return 0;
         }
 
         CURL *curl = curl_easy_init();
@@ -134,6 +137,63 @@ wttr(IRC *irc, SV sender, SV arg)
         }
 
         return 0;
+}
+
+static int
+_rnd(IRC *irc, SV sender, SV arg)
+{
+        SV arg1 = chop_by_delim(&arg, ' ');
+        SV arg2 = arg;
+
+        if (arg1.count == 0)
+        {
+                irc_send_message(irc,
+                        SV("error: `rand` expects 1-2 args\n"));
+
+                return 0;
+        }
+
+        uint32_t min = 0;
+        uint32_t max = sv_parse_uint(arg1);
+
+        if (max == -1)
+        {
+                goto error;
+        }
+
+        if (arg2.count > 0)
+        {
+                min = max;
+                max = sv_parse_uint(arg2);
+
+                if (max == -1)
+                {
+                        arg1 = arg2;
+                        goto error;
+                }
+        }
+
+        uint32_t range = max - min;
+
+        srand(time(NULL));
+        double r = (double)rand() / RAND_MAX;
+        uint32_t s = min + r * (range + 0.99);
+
+        char buffer[100];
+        int len = snprintf(buffer, sizeof(buffer),
+                           "%d\n", s);
+
+        irc_send_message(irc, sv_from(buffer, len));
+        return 0;
+
+error:
+        {
+                char buffer[100];
+                int len = snprintf(buffer, sizeof (buffer),
+                                   "invalid int: `%.*s`\n", sv_arg(arg1));
+                irc_send_message(irc, sv_from(buffer, len));
+                return 0;
+        }
 }
 
 static int
