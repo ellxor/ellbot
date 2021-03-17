@@ -54,7 +54,7 @@ cmds(IRC *irc, SV sender, SV arg)
                 SV name = COMMANDS[i].name;
                 if (name.mem != NULL)
                 {
-                        writer += sprintf(writer, "`%.*s` ",
+                        writer += sprintf(writer, "%.*s, ",
                                           sv_arg(name));
 
                         if (writer - buffer > 200)
@@ -65,6 +65,7 @@ cmds(IRC *irc, SV sender, SV arg)
                 }
         }
 
+        writer -= 2;
         *writer = 0;
 
         SV msg = sv_from(buffer, writer - buffer);
@@ -98,10 +99,25 @@ wttr(IRC *irc, SV sender, SV arg)
                 arg = SV("london");
         }
 
-        char cmd[500];
-        char buffer[500];
+        char cmd[50];
+        char buffer[100];
 
-        // TODO: "sanitize input: urgent!"
+        if (arg.count > 20)
+        {
+                irc_send_message(irc, SV("error: invalid location"));
+                return 0;
+        }
+
+        for (int i = 0; i < arg.count; i++)
+        {
+                char c = arg.mem[i];
+                if (!(('a' <= c && c <= 'z') || c == ' '))
+                {
+                        irc_send_message(irc, SV("error: invalid location"));
+                        return 0;
+                }
+        }
+
         snprintf(cmd, sizeof(cmd),
                  "curl -s 'wttr.in/%.*s?format=4'",
                  sv_arg(arg));
