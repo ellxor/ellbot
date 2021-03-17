@@ -22,7 +22,6 @@ static int halt(IRC *irc, SV sender, SV arg);
 static struct command
 COMMANDS[64] =
 {
-        [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x23] = {.name = SV("date"), .action = date},
         [0x2A] = {.name = SV("rand"), .action = _rnd},
         [0x2E] = {.name = SV("halt"), .action = halt},
@@ -45,38 +44,6 @@ validate_user(SV sender)
         }
 
         return user;
-}
-
-static int
-cmds(IRC *irc, SV sender, SV arg)
-{
-        #define prefix "commands: "
-        char buffer[256] = prefix;
-        char *writer = buffer + sizeof(prefix) - 1;
-
-        for (int i = 0; i < 64; i++)
-        {
-                SV name = COMMANDS[i].name;
-                if (name.mem != NULL)
-                {
-                        writer += sprintf(writer, "%.*s, ",
-                                          sv_arg(name));
-
-                        if (writer - buffer > 200)
-                        {
-                                fprintf(stderr, "Error: buffer limit exceeded "
-                                                "when displaying commands\n");
-                        };
-                }
-        }
-
-        writer -= 2;
-        *writer = 0;
-
-        SV msg = sv_from(buffer, writer - buffer);
-        irc_send_message(irc, msg);
-
-        return 0;
 }
 
 static int
