@@ -17,14 +17,14 @@ static int ping(IRC *irc, SV sender, SV arg);
 static int date(IRC *irc, SV sender, SV arg);
 static int wttr(IRC *irc, SV sender, SV arg);
 static int _rnd(IRC *irc, SV sender, SV arg);
-static int halt(IRC *irc, SV sender, SV arg);
+static int kill(IRC *irc, SV sender, SV arg);
 
 static struct command
 COMMANDS[64] =
 {
+        [0x11] = {.name = SV("kill"), .action = kill},
         [0x23] = {.name = SV("date"), .action = date},
         [0x2A] = {.name = SV("rand"), .action = _rnd},
-        [0x2E] = {.name = SV("halt"), .action = halt},
         [0x33] = {.name = SV("ping"), .action = ping},
         [0x36] = {.name = SV("wttr"), .action = wttr},
 };
@@ -143,7 +143,7 @@ _rnd(IRC *irc, SV sender, SV args)
 }
 
 static int
-halt(IRC *irc, SV sender, SV arg)
+kill(IRC *irc, SV sender, SV arg)
 {
         if (sv_eq(sender, SV(NICK)))
         {
