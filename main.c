@@ -80,9 +80,7 @@ main(int argc, char **argv)
 void
 sighandler(int sn)
 {
-       printf("\n\nreceived sig(%d), "
-              "freeing memory...\n", sn);
-
+       printf("\n\nreceived sig(%d), freeing memory...\n", sn);
        irc_disconnect(&irc);
        exit(0);
 }
