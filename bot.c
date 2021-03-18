@@ -22,6 +22,7 @@ static int kill(IRC *irc, SV sender, SV arg);
 static struct command
 COMMANDS[64] =
 {
+        [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x11] = {.name = SV("kill"), .action = kill},
         [0x23] = {.name = SV("date"), .action = date},
         [0x2A] = {.name = SV("rand"), .action = _rnd},
@@ -32,7 +33,7 @@ COMMANDS[64] =
 static SV
 validate_user(SV sender)
 {
-        SV user = chop_by_delim(&sender, '!');
+        SV user =  chop_by_delim(&sender, '!');
         SV user1 = chop_by_delim(&sender, '@');
         SV user2 = chop_by_delim(&sender, '.');
 
@@ -44,6 +45,53 @@ validate_user(SV sender)
         }
 
         return user;
+}
+
+static int
+sv_cmp(const void *a, const void *b)
+{
+        SV sa = *(SV *)a;
+        SV sb = *(SV *)b;
+
+        int len = (sa.count < sb.count)
+                ? sa.count
+                : sb.count;
+
+        return strncmp(sa.mem, sb.mem, len);
+}
+
+static int
+cmds(IRC *irc, SV sender, SV arg)
+{
+        SV buff[64];
+        int len = 0;
+
+        for (int i = 0; i < 64; i++)
+        {
+                SV name = COMMANDS[i].name;
+
+                if (name.mem != NULL)
+                {
+                        buff[len++] = name;
+                }
+        }
+
+        qsort(buff, len, sizeof(SV), sv_cmp);
+
+        char buffer[500];
+        char *writer = buffer;
+
+        for (int i = 0; i < len; i++)
+        {
+                writer += snprintf(writer,
+                                   500 - (writer - buffer),
+                                   "%.*s, ", sv_arg(buff[i])
+                                  );
+        }
+
+        irc_send_message(irc,
+                sv_from(buffer, writer - buffer - 2));
+        return 0;
 }
 
 static int
