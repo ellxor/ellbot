@@ -9,21 +9,19 @@
 struct command
 {
         SV name;
-        int (*action)(IRC *irc, SV sender, SV arg);
+        void (*action)(IRC *irc, SV sender, SV arg);
 };
 
-static int cmds(IRC *irc, SV sender, SV arg);
-static int ping(IRC *irc, SV sender, SV arg);
-static int date(IRC *irc, SV sender, SV arg);
-static int wttr(IRC *irc, SV sender, SV arg);
-static int _rnd(IRC *irc, SV sender, SV arg);
-static int kill(IRC *irc, SV sender, SV arg);
+static void cmds(IRC *irc, SV sender, SV arg);
+static void ping(IRC *irc, SV sender, SV arg);
+static void date(IRC *irc, SV sender, SV arg);
+static void wttr(IRC *irc, SV sender, SV arg);
+static void _rnd(IRC *irc, SV sender, SV arg);
 
 static struct command
 COMMANDS[64] =
 {
         [0x0C] = {.name = SV("cmds"), .action = cmds},
-        [0x11] = {.name = SV("kill"), .action = kill},
         [0x23] = {.name = SV("date"), .action = date},
         [0x2A] = {.name = SV("rand"), .action = _rnd},
         [0x33] = {.name = SV("ping"), .action = ping},
@@ -60,7 +58,7 @@ sv_cmp(const void *a, const void *b)
         return strncmp(sa.mem, sb.mem, len);
 }
 
-static int
+static void
 cmds(IRC *irc, SV sender, SV arg)
 {
         SV buff[64];
@@ -91,23 +89,20 @@ cmds(IRC *irc, SV sender, SV arg)
 
         irc_send_message(irc,
                 sv_from(buffer, writer - buffer - 2));
-        return 0;
 }
 
-static int
+static void
 ping(IRC *irc, SV sender, SV arg)
 {
         irc_send_message(irc, SV("pong"));
-        return 0;
 }
 
-static int
+static void
 date(IRC *irc, SV sender, SV arg)
 {
         time_t unix_time = time(NULL);
         const char *date = asctime(gmtime(&unix_time));
         irc_send_message(irc, sv_from(date, strlen(date)));
-        return 0;
 }
 
 static size_t
@@ -123,14 +118,14 @@ curl_callback(char *ptr, size_t size, size_t nmemb, void *data)
 }
 
 
-static int
+static void
 wttr(IRC *irc, SV sender, SV arg)
 {
         if (arg.count == 0)
         {
                 irc_send_message(irc,
                         SV("error: `wttr` expects 1 arg\n"));
-                return 0;
+                return;
         }
 
         CURL *curl = curl_easy_init();
@@ -150,11 +145,9 @@ wttr(IRC *irc, SV sender, SV arg)
 
                 irc_send_message(irc, data);
         }
-
-        return 0;
 }
 
-static int
+static void
 _rnd(IRC *irc, SV sender, SV args)
 {
         SV arg = chop_by_delim(&args, ' ');
@@ -168,7 +161,7 @@ _rnd(IRC *irc, SV sender, SV args)
                                           SV("error: invalid int `"),
                                           arg,
                                           SV("`"));
-                        return 0;
+                        return;
                 }
 
                 arg = chop_by_delim(&args, ' ');
@@ -179,7 +172,7 @@ _rnd(IRC *irc, SV sender, SV args)
         {
                 irc_send_message(irc,
                         SV("error: `rand` expects 1-2 args\n"));
-                return 0;
+                return;
         }
 
         srand(time(NULL));
@@ -190,23 +183,10 @@ _rnd(IRC *irc, SV sender, SV args)
         int len = sprintf(buffer, "%d\n", s);
 
         irc_send_message(irc, sv_from(buffer, len));
-        return 0;
+        return;
 }
 
-static int
-kill(IRC *irc, SV sender, SV arg)
-{
-        if (sv_eq(sender, SV(NICK)))
-        {
-                printf("Halting bot at the request of `%.*s`\n",
-                       sv_arg(sender));
-                return -1;
-        }
-
-        return 0;
-}
-
-int
+void
 handle_message(IRC *irc, SV sender, SV message)
 {
         SV user = validate_user(sender);
@@ -214,7 +194,7 @@ handle_message(IRC *irc, SV sender, SV message)
         {
                 fprintf(stderr, "Error: unrecognised username: `%.*s`.\n",
                         sv_arg(sender));
-                return 0;
+                return;
         }
 
         if (sv_expect(&message, SV("`")) == 0)
@@ -226,13 +206,9 @@ handle_message(IRC *irc, SV sender, SV message)
 
                 if (check.mem != NULL && sv_eq(command, check))
                 {
-                        int code = COMMANDS[hash].action(
-                                        irc, user, message
-                                   );
-
-                        if (code) return code;
+                        COMMANDS[hash].action(
+                                irc, user, message
+                        );
                 }
         }
-
-        return 0;
 }

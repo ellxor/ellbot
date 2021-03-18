@@ -64,12 +64,10 @@ main(int argc, char **argv)
                                 continue;
                         }
 
-                        int code = handle_message(&irc, username, message);
-                        if (code == -1) break;
+                        handle_message(&irc, username, message);
                 }
         }
         while (1);
 
-        irc_disconnect(&irc);
         return 0;
 }
