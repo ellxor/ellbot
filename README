@@ -1,6 +1,7 @@
 ellbot is a twitch bot written in c.  
 
 dependencies:  
+. libc
 . libcurl  
 . openssl  
 . posix  
