@@ -16,6 +16,7 @@ SV sv_from(const char *str, int count);
 SV chop(SV *sv, int i);
 SV chop_right(SV *sv, int i);
 SV chop_by_delim(SV *sv, char delim);
+void trim(SV *sv);
 int sv_eq(SV a, SV b);
 int sv_expect(SV *sv, SV e);
 uint32_t sv_parse_uint(SV sv);

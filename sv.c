@@ -66,6 +66,16 @@ chop_by_delim(SV *sv, char delim)
         return result;
 }
 
+void
+trim(SV *sv)
+{
+        while (sv->count && *sv->mem == ' ')
+        {
+                sv->mem++;
+                sv->count--;
+        }
+}
+
 int
 sv_eq(SV a, SV b)
 {
@@ -106,7 +116,8 @@ sv_expect(SV *sv, SV e)
         return 0;
 }
 
-uint32_t sv_parse_uint(SV sv)
+uint32_t
+sv_parse_uint(SV sv)
 {
         uint32_t res = 0;
 
