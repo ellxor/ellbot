@@ -22,22 +22,13 @@ main(int argc, char **argv)
                 exit(-1);
         };
 
-        char chan_buffer[100] = "#";
-        int len = 1;
-
-        len += snprintf(chan_buffer + 1,
-                        sizeof(chan_buffer) - 1,
-                        "%s", argv[1]);
-
-        irc.channel = sv_from(chan_buffer, len);
-        printf("Channel = `%.*s`\n", sv_arg(irc.channel));
-
+        irc.channel = sv_from(argv[1], strlen(argv[1]));
         SV nickname = SV("NICK "NICK"\n");
         SV password = SV("PASS "PASS"\n");
 
         irc_send(&irc, password);
         irc_send(&irc, nickname);
-        irc_send(&irc, SV("JOIN "));
+        irc_send(&irc, SV("JOIN #"));
         irc_send(&irc, irc.channel);
         irc_send(&irc, SV("\n"));
 

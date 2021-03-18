@@ -143,7 +143,7 @@ irc_read(IRC *irc, char *buffer, int count)
 void
 irc_send_message(IRC *irc, SV msg)
 {
-        irc_send(irc, SV("PRIVMSG "));
+        irc_send(irc, SV("PRIVMSG #"));
         irc_send(irc, irc->channel);
         irc_send(irc, SV(" :"));
         irc_send(irc, msg);
