@@ -1,9 +1,14 @@
+#include <signal.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "bot.h"
 #include "config.h"
 #include "irc.h"
 #include "sv.h"
+
+static IRC irc = {0};
+void sighandler(int);
 
 int
 main(int argc, char **argv)
@@ -14,13 +19,13 @@ main(int argc, char **argv)
                 return 0;
         }
 
-        IRC irc = {0};
-
         if (irc_connect(&irc) == -1)
         {
                 fprintf(stderr, "Fatal Error: shutting down...\n");
                 exit(-1);
         };
+
+        signal(SIGINT, sighandler);
 
         irc.channel = sv_from(argv[1], strlen(argv[1]));
         SV nickname = SV("NICK "NICK"\n");
@@ -70,4 +75,14 @@ main(int argc, char **argv)
         while (1);
 
         return 0;
+}
+
+void
+sighandler(int sn)
+{
+       printf("\n\nreceived sig(%d), "
+              "freeing memory...\n", sn);
+
+       irc_disconnect(&irc);
+       exit(0);
 }
