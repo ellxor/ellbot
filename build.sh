@@ -1,1 +1,1 @@
-clang *.c -o ellbot -lssl -lcrypto -lcurl -lm
+clang *.c -o ellbot -lssl -lcrypto -lcurl -lm -O3
