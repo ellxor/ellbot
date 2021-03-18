@@ -55,7 +55,7 @@ main(int argc, char **argv)
                         SV username = chop_by_delim(&message, ' ');
                         SV command = chop_by_delim(&message, ' ');
                         chop_by_delim(&message, ' '); //"skip channel"
-                        chop_right(&message, 2);
+                        chop_right(&message, 2);      //"remove \r\n"
 
                         if (sv_expect(&username, SV(":"))       < 0 ||
                             sv_expect(&command,  SV("PRIVMSG")) < 0 ||
