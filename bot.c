@@ -17,6 +17,7 @@ static void ping(IRC *irc, SV sender, SV arg);
 static void date(IRC *irc, SV sender, SV arg);
 static void wttr(IRC *irc, SV sender, SV arg);
 static void _rnd(IRC *irc, SV sender, SV arg);
+static void calc(IRC *irc, SV sender, SV arg);
 
 static struct command
 COMMANDS[64] =
@@ -26,6 +27,7 @@ COMMANDS[64] =
         [0x2A] = {.name = SV("rand"), .action = _rnd},
         [0x33] = {.name = SV("ping"), .action = ping},
         [0x36] = {.name = SV("wttr"), .action = wttr},
+        [0x38] = {.name = SV("calc"), .action = calc},
 };
 
 static SV
@@ -184,6 +186,12 @@ _rnd(IRC *irc, SV sender, SV args)
 
         irc_send_message(irc, sv_from(buffer, len));
         return;
+}
+
+static void
+calc(IRC *irc, SV sender, SV arg)
+{
+        printf("Calc: %.*s\n", sv_arg(arg));
 }
 
 void
