@@ -303,7 +303,7 @@ evaluate(Q *toks)
         case '^': return  pow(B, A);
         }
 
-        assert(0 && "unreacheable!");
+        assert(0 && "unreachable!");
 }
 
 //===="WRAPPER"====//
