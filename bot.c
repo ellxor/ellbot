@@ -1,4 +1,5 @@
 #include "bot.h"
+#include "calc.h"
 #include "config.h"
 
 #include <assert.h>
@@ -191,7 +192,18 @@ _rnd(IRC *irc, SV sender, SV args)
 static void
 calc(IRC *irc, SV sender, SV arg)
 {
-        printf("Calc: %.*s\n", sv_arg(arg));
+        SV err = {0};
+        SV res = eval(arg, &err);
+
+        if (err.mem == NULL)
+        {
+                irc_send_message(irc, res);
+        }
+
+        else
+        {
+                irc_send_messages(irc, 2, res, err);
+        }
 }
 
 void
