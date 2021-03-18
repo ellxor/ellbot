@@ -1,5 +1,6 @@
 #include "irc.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -143,9 +144,24 @@ irc_read(IRC *irc, char *buffer, int count)
 void
 irc_send_message(IRC *irc, SV msg)
 {
+        irc_send_messages(irc, 1, msg);
+}
+
+void
+irc_send_messages(IRC *irc, int count, ...)
+{
         irc_send(irc, SV("PRIVMSG #"));
         irc_send(irc, irc->channel);
         irc_send(irc, SV(" :"));
-        irc_send(irc, msg);
+
+        va_list args;
+        va_start(args, count);
+
+        for (int i = 0; i < count; i++)
+        {
+                irc_send(irc, va_arg(args, SV));
+        }
+
+        va_end(args);
         irc_send(irc, SV("\r\n"));
 }

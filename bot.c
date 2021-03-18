@@ -116,7 +116,10 @@ _rnd(IRC *irc, SV sender, SV args)
         {
                 if ((min = max, max = sv_parse_uint(arg)) == -1)
                 {
-                        irc_send_message(irc, SV("error: invalid int"));
+                        irc_send_messages(irc, 3,
+                                          SV("error: invalid int `"),
+                                          arg,
+                                          SV("`"));
                         return 0;
                 }
 
