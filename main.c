@@ -28,8 +28,8 @@ main(int argc, char **argv)
 
         irc.channel = sv_from(argv[1], strlen(argv[1]));
 
-        const char *nick = getenv("NICK");
-        const char *pass = getenv("PASS");
+        const char *nick = getenv("nick");
+        const char *pass = getenv("pass");
 
         if (nick == NULL || pass == NULL)
         {
