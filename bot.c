@@ -1,6 +1,5 @@
 #include "bot.h"
 #include "calc.h"
-#include "config.h"
 
 #include <assert.h>
 #include <curl/curl.h>

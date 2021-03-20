@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 #include "bot.h"
-#include "config.h"
 #include "irc.h"
 #include "sv.h"
 
@@ -19,23 +18,28 @@ main(int argc, char **argv)
                 return 0;
         }
 
+        signal(SIGINT, sighandler);
+
         if (irc_connect(&irc) == -1)
         {
                 fprintf(stderr, "Fatal Error: shutting down...\n");
                 exit(-1);
         };
 
-        signal(SIGINT, sighandler);
-
         irc.channel = sv_from(argv[1], strlen(argv[1]));
-        SV nickname = SV("NICK "NICK"\n");
-        SV password = SV("PASS "PASS"\n");
 
-        irc_send(&irc, password);
-        irc_send(&irc, nickname);
-        irc_send(&irc, SV("JOIN #"));
-        irc_send(&irc, irc.channel);
-        irc_send(&irc, SV("\n"));
+        const char *nick = getenv("NICK");
+        const char *pass = getenv("PASS");
+
+        if (nick == NULL || pass == NULL)
+        {
+                fprintf(stderr, "missing environment variables\n");
+                irc_disconnect(&irc);
+                return -1;
+        }
+
+        irc_join(&irc, sv_from(nick, strlen(nick)),
+                       sv_from(pass, strlen(pass)));
 
         puts("Connected to Twitch!\n");
 

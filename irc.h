@@ -26,3 +26,4 @@ int irc_send(IRC *irc, SV sv);
 int irc_read(IRC *irc, char *buffer, int count);
 void irc_send_message(IRC *irc, SV msg);
 void irc_send_messages(IRC *irc, int count, ...);
+void irc_join(IRC *irc, SV nick, SV pass);

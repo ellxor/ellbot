@@ -165,3 +165,19 @@ irc_send_messages(IRC *irc, int count, ...)
         va_end(args);
         irc_send(irc, SV("\r\n"));
 }
+
+void 
+irc_join(IRC *irc, SV nick, SV pass)
+{
+        irc_send(irc, SV("PASS "));
+        irc_send(irc, pass);
+        irc_send(irc, SV("\n"));
+
+        irc_send(irc, SV("NICK "));
+        irc_send(irc, nick);
+        irc_send(irc, SV("\n"));
+
+        irc_send(irc, SV("JOIN #"));
+        irc_send(irc, irc->channel);
+        irc_send(irc, SV("\n"));
+}
