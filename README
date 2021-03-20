@@ -7,8 +7,9 @@ respectively.
                                   dependencies
                          libc, libcurl, openssl, posix
 
+
                                     license
 
 this software is freely distributed under the Zero-Clause BSD (0BSD) license.
-permission to use, copy, modify, and/or distribute this software for any purpose
-with or without fee is hereby granted.
+permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
