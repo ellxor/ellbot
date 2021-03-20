@@ -1,7 +1,14 @@
-ellbot is a twitch bot written in c.  
+                                     ellbot
 
-dependencies:  
-. libc
-. libcurl  
-. openssl  
-. posix  
+ellbot is a twitch bot written in c (posix). before running the bot, set the
+environment variables, `nick` and `pass`, to your nickname and oauth token
+respectively.
+
+                                  dependencies
+                         libc, libcurl, openssl, posix
+
+                                    license
+
+this software is freely distributed under the Zero-Clause BSD (0BSD) license.
+permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted.
