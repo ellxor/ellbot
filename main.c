@@ -20,6 +20,15 @@ main(int argc, char **argv)
 
         signal(SIGINT, sighandler);
 
+        const char *nick = getenv("nick");
+        const char *pass = getenv("pass");
+
+        if (nick == NULL || pass == NULL)
+        {
+                fprintf(stderr, "missing environment variables\n");
+                return -1;
+        }
+
         if (irc_connect(&irc) == -1)
         {
                 fprintf(stderr, "Fatal Error: shutting down...\n");
@@ -27,17 +36,6 @@ main(int argc, char **argv)
         };
 
         irc.channel = sv_from(argv[1], strlen(argv[1]));
-
-        const char *nick = getenv("nick");
-        const char *pass = getenv("pass");
-
-        if (nick == NULL || pass == NULL)
-        {
-                fprintf(stderr, "missing environment variables\n");
-                irc_disconnect(&irc);
-                return -1;
-        }
-
         irc_join(&irc, sv_from(nick, strlen(nick)),
                        sv_from(pass, strlen(pass)));
 
