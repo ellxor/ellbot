@@ -174,7 +174,7 @@ check_tokens(token_t *toks, int len, SV *err)
 
                 if (!valid)
                 {
-                        *err = UNEXPECTED[tok.kind];
+                        *err = UNEXPECTED[(int)tok.kind];
                         return -1;
                 }
 
@@ -209,7 +209,7 @@ prec(token_t tok)
                 ['$'] = 0xff,
         };
 
-        return TBL[tok.value.c];
+        return TBL[(int)tok.value.c];
 }
 
 static Q

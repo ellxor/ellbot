@@ -12,22 +12,20 @@ struct command
         void (*action)(IRC *irc, SV sender, SV arg);
 };
 
-static void cmds(IRC *irc, SV sender, SV arg);
-static void ping(IRC *irc, SV sender, SV arg);
-static void date(IRC *irc, SV sender, SV arg);
-static void wttr(IRC *irc, SV sender, SV arg);
-static void _rnd(IRC *irc, SV sender, SV arg);
-static void calc(IRC *irc, SV sender, SV arg);
+static void cmds(), date(), rnd(), src(), ping(),
+            wttr(), calc(), dots();
 
 static struct command
 COMMANDS[64] =
 {
         [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x23] = {.name = SV("date"), .action = date},
-        [0x2A] = {.name = SV("rand"), .action = _rnd},
+        [0x29] = {.name = SV("rnd"),  .action = rnd },
+        [0x2D] = {.name = SV("src"),  .action = src },
         [0x33] = {.name = SV("ping"), .action = ping},
         [0x36] = {.name = SV("wttr"), .action = wttr},
         [0x38] = {.name = SV("calc"), .action = calc},
+        [0x3F] = {.name = SV("dots"), .action = dots},
 };
 
 static SV
@@ -47,22 +45,12 @@ validate_user(SV sender)
         return user;
 }
 
-static int
-sv_cmp(const void *a, const void *b)
-{
-        SV sa = *(SV *)a;
-        SV sb = *(SV *)b;
-
-        int len = (sa.count < sb.count)
-                ? sa.count
-                : sb.count;
-
-        return strncmp(sa.mem, sb.mem, len);
-}
-
 static void
 cmds(IRC *irc, SV sender, SV arg)
 {
+        (void)sender;
+        (void)arg;
+
         SV buff[64];
         int len = 0;
 
@@ -96,12 +84,18 @@ cmds(IRC *irc, SV sender, SV arg)
 static void
 ping(IRC *irc, SV sender, SV arg)
 {
+        (void)sender;
+        (void)arg;
+
         irc_send_message(irc, SV("pong"));
 }
 
 static void
 date(IRC *irc, SV sender, SV arg)
 {
+        (void)sender;
+        (void)arg;
+
         time_t unix_time = time(NULL);
         const char *date = asctime(gmtime(&unix_time));
         irc_send_message(irc, sv_from(date, strlen(date)));
@@ -123,6 +117,8 @@ curl_callback(char *ptr, size_t size, size_t nmemb, void *data)
 static void
 wttr(IRC *irc, SV sender, SV arg)
 {
+        (void)sender;
+
         if (arg.count == 0)
         {
                 irc_send_message(irc,
@@ -150,14 +146,16 @@ wttr(IRC *irc, SV sender, SV arg)
 }
 
 static void
-_rnd(IRC *irc, SV sender, SV args)
+rnd(IRC *irc, SV sender, SV args)
 {
+        (void)sender;
+
         SV arg = chop_by_delim(&args, ' ');
         uint32_t min = 0, max = 0, count = 0;
 
         while (arg.count > 0 && count < 2)
         {
-                if ((min = max, max = sv_parse_uint(arg)) == -1)
+                if ((min = max, max = sv_parse_uint(arg)) == (uint32_t)-1)
                 {
                         irc_send_messages(irc, 3,
                                           SV("error: invalid int `"),
@@ -189,8 +187,21 @@ _rnd(IRC *irc, SV sender, SV args)
 }
 
 static void
+src(IRC *irc, SV sender, SV arg)
+{
+        (void)sender;
+        (void)arg;
+
+        SV msg = SV("source code: https://github.com/ellxor/ellbot");
+        irc_send_message(irc, msg);
+}
+
+static void
 calc(IRC *irc, SV sender, SV arg)
 {
+        (void)sender;
+        (void)arg;
+
         SV err = {0};
         SV res = eval(arg, &err);
 
@@ -203,6 +214,16 @@ calc(IRC *irc, SV sender, SV arg)
         {
                 irc_send_messages(irc, 2, res, err);
         }
+}
+
+static void
+dots(IRC *irc, SV sender, SV arg)
+{
+        (void)sender;
+        (void)arg;
+
+        SV msg = SV("dot files: https://github.com/ellxor/dots");
+        irc_send_message(irc, msg);
 }
 
 void
