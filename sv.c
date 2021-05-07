@@ -41,23 +41,16 @@ SV
 chop_by_delim(SV *sv, char delim)
 {
         SV result = sv_from(sv->mem, 0);
-        int end = 0;
 
-        while (*sv->mem != delim)
+        while (sv->count > 0 && sv->mem[0] != delim)
         {
-                if (sv->count == 0)
-                {
-                        end = 1; 
-                        break;
-                }
-
                 sv->mem++;
                 sv->count--;
         }
 
         result.count = sv->mem - result.mem;
 
-        if (end == 0)
+        if (sv->count > 0 && sv->mem[0] == delim)
         {
                 sv->mem++;
                 sv->count--;
@@ -69,7 +62,7 @@ chop_by_delim(SV *sv, char delim)
 void
 trim(SV *sv)
 {
-        while (sv->count && *sv->mem == ' ')
+        while (sv->count > 0 && *sv->mem == ' ')
         {
                 sv->mem++;
                 sv->count--;
@@ -139,6 +132,7 @@ uint32_t
 sv_hash(SV sv)
 {
         uint32_t hash = 0x1505;
+
         for (int i = 0; i < sv.count; i++)
         {
                 hash = (hash << 5) + hash + sv.mem[i];
