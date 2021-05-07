@@ -45,19 +45,6 @@ validate_user(SV sender)
         return user;
 }
 
-static int
-sv_cmp(const void *a, const void *b)
-{
-        SV sa = *(SV *)a;
-        SV sb = *(SV *)b;
-
-        int len = (sa.count < sb.count)
-                ? sa.count
-                : sb.count;
-
-        return strncmp(sa.mem, sb.mem, len);
-}
-
 static void
 cmds(IRC *irc, SV sender, SV arg)
 {

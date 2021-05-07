@@ -89,6 +89,19 @@ sv_eq(SV a, SV b)
 }
 
 int
+sv_cmp(const void *a, const void *b)
+{
+        SV sa = *(SV *)a;
+        SV sb = *(SV *)b;
+
+        int len = (sa.count < sb.count)
+                ? sa.count
+                : sb.count;
+
+        return strncmp(sa.mem, sb.mem, len);
+}
+
+int
 sv_expect(SV *sv, SV e)
 {
         if (e.count > sv->count)
