@@ -13,7 +13,7 @@ struct command
 };
 
 static void cmds(), date(), rnd(), src(), ping(),
-            wttr(), calc(), dots();
+            wttr(), calc();
 
 // must be power of 2
 #define COMMAND_COUNT 64
@@ -28,7 +28,6 @@ COMMANDS[COMMAND_COUNT] =
         [0x33] = {.name = SV("ping"), .action = ping},
         [0x36] = {.name = SV("wttr"), .action = wttr},
         [0x38] = {.name = SV("calc"), .action = calc},
-        [0x3F] = {.name = SV("dots"), .action = dots},
 };
 
 static SV
@@ -217,16 +216,6 @@ calc(IRC *irc, SV sender, SV arg)
         {
                 irc_send_messages(irc, 2, res, err);
         }
-}
-
-static void
-dots(IRC *irc, SV sender, SV arg)
-{
-        (void)sender;
-        (void)arg;
-
-        SV msg = SV("dot files: https://github.com/ellxor/dots");
-        irc_send_message(irc, msg);
 }
 
 void
