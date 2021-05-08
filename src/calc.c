@@ -20,28 +20,32 @@ token_t;
 
 //===="QUEUE IMPLEMENTATION"====//
 
+const int max_tok_count = 500;
+
 typedef struct
 {
-        token_t toks[100];
+        token_t toks[max_tok_count];
         int len;
-}
-Q;
+} Q;
 
 static void
 push(Q *queue, token_t tok)
 {
+        assert(queue->len < max_tok_count);
         queue->toks[queue->len++] = tok;
 }
 
 static token_t
 pop(Q *queue)
 {
+        assert(queue->len > 0);
         return queue->toks[--queue->len];
 }
 
 static token_t
 peek(Q *queue)
 {
+        assert(queue->len > 0);
         return queue->toks[queue->len-1];
 }
 
