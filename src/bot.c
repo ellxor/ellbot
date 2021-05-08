@@ -131,6 +131,21 @@ wttr(IRC *irc, SV sender, SV arg)
         CURL *curl = curl_easy_init();
         if (curl != NULL)
         {
+                // sanitize input
+                for (int i = 0; i < arg.count; i++)
+                {
+                        switch (arg.mem[i])
+                        {
+                        case 'A' ... 'Z':
+                        case 'a' ... 'z':
+                        case ' ':
+                                break;
+
+                        default:
+                                goto clean_up;
+                        }
+                }
+
                 char url[100] = {0};
                 snprintf(url, sizeof(url),
                          "https://wttr.in/%.*s?format=4", sv_arg(arg));
@@ -141,9 +156,10 @@ wttr(IRC *irc, SV sender, SV arg)
                 curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_callback);
                 curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&data);
                 curl_easy_perform(curl);
-                curl_easy_cleanup(curl);
-
                 irc_send_message(irc, data);
+
+        clean_up:
+                curl_easy_cleanup(curl);
         }
 }
 
