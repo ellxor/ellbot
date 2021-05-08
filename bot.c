@@ -15,8 +15,11 @@ struct command
 static void cmds(), date(), rnd(), src(), ping(),
             wttr(), calc(), dots();
 
+// must be power of 2
+#define COMMAND_COUNT 64
+
 static struct command
-COMMANDS[64] =
+COMMANDS[COMMAND_COUNT] =
 {
         [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x23] = {.name = SV("date"), .action = date},
@@ -241,7 +244,7 @@ handle_message(IRC *irc, SV sender, SV message)
         {
                 SV command = chop_by_delim(&message, ' ');
 
-                uint32_t hash = 0x3F & sv_hash(command);
+                uint32_t hash = sv_hash(command) & (COMMAND_COUNT - 1);
                 SV check = COMMANDS[hash].name;
 
                 if (check.mem != NULL && sv_eq(command, check))
