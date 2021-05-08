@@ -106,20 +106,20 @@ sv_expect(SV *sv, SV e)
 {
         if (e.count > sv->count)
         {
-                return -1;
+                return 0;
         }
 
         for (int i = 0; i < e.count; i++)
         {
                 if (sv->mem[i] != e.mem[i])
                 {
-                        return -1;
+                        return 0;
                 }
         }
 
         sv->mem += e.count;
         sv->count -= e.count;
-        return 0;
+        return 1;
 }
 
 uint32_t

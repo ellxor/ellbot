@@ -240,7 +240,7 @@ handle_message(IRC *irc, SV sender, SV message)
                 return;
         }
 
-        if (sv_expect(&message, SV("`")) == 0)
+        if (sv_expect(&message, SV("`")))
         {
                 SV command = chop_by_delim(&message, ' ');
 

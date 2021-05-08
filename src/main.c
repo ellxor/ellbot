@@ -51,7 +51,7 @@ main(int argc, char **argv)
                 {
                         SV message = sv_from(buffer, size);
 
-                        if (sv_expect(&message, SV("PING")) == 0)
+                        if (sv_expect(&message, SV("PING")))
                         {
                                 puts("Server pinged and bot ponged!");
                                 irc_send(&irc, SV("PONG"));
@@ -64,14 +64,12 @@ main(int argc, char **argv)
                         chop_by_delim(&message, ' '); //"skip channel"
                         chop_right(&message, 2);      //"remove \r\n"
 
-                        if (sv_expect(&username, SV(":"))       < 0 ||
-                            sv_expect(&command,  SV("PRIVMSG")) < 0 ||
-                            sv_expect(&message,  SV(":"))       < 0)
+                        if (sv_expect(&username, SV(":"))       &&
+                            sv_expect(&command,  SV("PRIVMSG")) &&
+                            sv_expect(&message,  SV(":")))
                         {
-                                continue;
+                                handle_message(&irc, username, message);
                         }
-
-                        handle_message(&irc, username, message);
                 }
         }
         while (1);
