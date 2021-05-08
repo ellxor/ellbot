@@ -62,7 +62,7 @@ chop_by_delim(SV *sv, char delim)
 void
 trim(SV *sv)
 {
-        while (sv->count > 0 && *sv->mem == ' ')
+        while (sv->count > 0 && sv->mem[0] == ' ')
         {
                 sv->mem++;
                 sv->count--;
