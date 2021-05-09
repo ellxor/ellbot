@@ -281,8 +281,7 @@ to_rpn(token_t *toks, int len)
 static double
 evaluate(Q *toks)
 {
-        assert(toks->len > 0
-               && "queue must not be empty");
+        assert(toks->len > 0 && "queue must not be empty");
         token_t tok = pop(toks);
 
         if (tok.kind == LITERAL)
@@ -336,7 +335,7 @@ eval(SV expr, SV *err)
 
         if (expr.count > 0)
         {
-                *err = SV("exceeded 100 tokens");
+                *err = SV("exceeded token limit");
                 return SV("error: ");
         }
 
