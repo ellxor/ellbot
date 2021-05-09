@@ -1,6 +1,9 @@
 #include "bot.h"
 #include "calc.h"
 
+#define TBL_SIZE 64
+#include "hash.h"
+
 #include <assert.h>
 #include <curl/curl.h>
 #include <stdio.h>
@@ -15,11 +18,9 @@ struct command
 static void cmds(), date(), rnd(), src(), ping(),
             wttr(), calc();
 
-#define TBL_SIZE 64
+
 static_assert(TBL_SIZE != 0 && (TBL_SIZE & (TBL_SIZE-1)) == 0,
               "`TBL_SIZE` must be a power of two");
-
-#include "hash.h"
 
 static struct command
 COMMANDS[TBL_SIZE] =
