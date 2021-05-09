@@ -148,7 +148,7 @@ sv_hash(SV sv)
 
         for (int i = 0; i < sv.count; i++)
         {
-                hash = (hash << 5) + hash + sv.mem[i];
+                hash = 33*hash + sv.mem[i];
         }
 
         return hash;
