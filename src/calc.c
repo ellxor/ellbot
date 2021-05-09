@@ -348,8 +348,17 @@ eval(SV expr, SV *err)
         Q rpn = to_rpn(toks, tokc);
         double v = evaluate(&rpn);
 
-        static char mem[50];
-        int len = snprintf(mem, sizeof(mem), "%g", v);
+        static char mem[30];
+        int len = 0;
+
+        if (fabs(v) < 1e15 && floor(v) == v) {
+                len = snprintf(mem, sizeof(mem), "%ld", (uint64_t)v);
+        }
+
+
+        else {
+                len = snprintf(mem, sizeof(mem), "%g", v);
+        }
 
         return sv_from(mem, len);
 }
