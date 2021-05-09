@@ -26,8 +26,8 @@ COMMANDS[TBL_SIZE] =
 {
         [constexpr_hash("cmds", 4)] = {.name = SV("cmds"), .action = cmds},
         [constexpr_hash("date", 4)] = {.name = SV("date"), .action = date},
-        [constexpr_hash("rnd" , 3)] = {.name = SV("rnd"),  .action = rnd },
-        [constexpr_hash("src" , 3)] = {.name = SV("src"),  .action = src },
+        [constexpr_hash("rnd" , 3)] = {.name = SV("rnd") , .action = rnd },
+        [constexpr_hash("src" , 3)] = {.name = SV("src") , .action = src },
         [constexpr_hash("ping", 4)] = {.name = SV("ping"), .action = ping},
         [constexpr_hash("wttr", 4)] = {.name = SV("wttr"), .action = wttr},
         [constexpr_hash("calc", 4)] = {.name = SV("calc"), .action = calc},
