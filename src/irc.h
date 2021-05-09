@@ -16,8 +16,7 @@ typedef struct
         int socket;
         SSL *ssl;
         SV channel;
-}
-IRC;
+} IRC;
 
 int irc_connect(IRC *irc);
 void irc_disconnect(IRC *irc);

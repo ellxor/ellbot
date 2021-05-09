@@ -15,8 +15,7 @@ typedef struct
 {
         char kind;
         union { double d; char c; } value;
-}
-token_t;
+} token_t;
 
 //===="QUEUE IMPLEMENTATION"====//
 

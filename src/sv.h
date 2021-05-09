@@ -2,12 +2,10 @@
 #include <string.h>
 #include <stdint.h>
 
-typedef struct
-{
+typedef struct {
         const char *mem;
         int count;
-}
-SV;
+} SV;
 
 #define SV(str) ((SV) { .mem = (str), .count = sizeof(str)-1 })
 #define sv_arg(sv) (sv).count, (sv).mem 
