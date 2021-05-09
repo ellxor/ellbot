@@ -19,16 +19,18 @@ static void cmds(), date(), rnd(), src(), ping(),
 static_assert(TBL_SIZE != 0 && (TBL_SIZE & (TBL_SIZE-1)) == 0,
               "`TBL_SIZE` must be a power of two");
 
+#include "hash.h"
+
 static struct command
 COMMANDS[TBL_SIZE] =
 {
-        [0x0C] = {.name = SV("cmds"), .action = cmds},
-        [0x23] = {.name = SV("date"), .action = date},
-        [0x29] = {.name = SV("rnd"),  .action = rnd },
-        [0x2D] = {.name = SV("src"),  .action = src },
-        [0x33] = {.name = SV("ping"), .action = ping},
-        [0x36] = {.name = SV("wttr"), .action = wttr},
-        [0x38] = {.name = SV("calc"), .action = calc},
+        [constexpr_hash("cmds", 4)] = {.name = SV("cmds"), .action = cmds},
+        [constexpr_hash("date", 4)] = {.name = SV("date"), .action = date},
+        [constexpr_hash("rmd" , 3)] = {.name = SV("rnd"),  .action = rnd },
+        [constexpr_hash("src" , 3)] = {.name = SV("src"),  .action = src },
+        [constexpr_hash("ping", 4)] = {.name = SV("ping"), .action = ping},
+        [constexpr_hash("wttr", 4)] = {.name = SV("wttr"), .action = wttr},
+        [constexpr_hash("calc", 4)] = {.name = SV("calc"), .action = calc},
 };
 
 static SV
