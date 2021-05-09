@@ -15,8 +15,9 @@ struct command
 static void cmds(), date(), rnd(), src(), ping(),
             wttr(), calc();
 
-// must be power of 2
 #define COMMAND_COUNT 64
+static_assert(COMMAND_COUNT != 0 && (COMMAND_COUNT & (COMMAND_COUNT-1)) == 0,
+              "`COMMAND_COUNT` must be a power of two");
 
 static struct command
 COMMANDS[COMMAND_COUNT] =
