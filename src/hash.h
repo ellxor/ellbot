@@ -1,7 +1,7 @@
 /// compile-time string hashing ///
 
 #ifndef TBL_SIZE
-#error `TBL_SIZE` has not been defined
+#error "`TBL_SIZE` has not been defined"
 #endif
 
 #define constexpr_hash(str, len) (__eval(__hash_ ## len, str) & (TBL_SIZE-1))
