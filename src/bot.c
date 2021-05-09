@@ -15,12 +15,12 @@ struct command
 static void cmds(), date(), rnd(), src(), ping(),
             wttr(), calc();
 
-#define COMMAND_COUNT 64
-static_assert(COMMAND_COUNT != 0 && (COMMAND_COUNT & (COMMAND_COUNT-1)) == 0,
-              "`COMMAND_COUNT` must be a power of two");
+#define TBL_SIZE 64
+static_assert(TBL_SIZE != 0 && (TBL_SIZE & (TBL_SIZE-1)) == 0,
+              "`TBL_SIZE` must be a power of two");
 
 static struct command
-COMMANDS[COMMAND_COUNT] =
+COMMANDS[TBL_SIZE] =
 {
         [0x0C] = {.name = SV("cmds"), .action = cmds},
         [0x23] = {.name = SV("date"), .action = date},
@@ -250,7 +250,7 @@ handle_message(IRC *irc, SV sender, SV message)
         {
                 SV command = chop_by_delim(&message, ' ');
 
-                uint32_t hash = sv_hash(command) & (COMMAND_COUNT - 1);
+                uint32_t hash = sv_hash(command) & (TBL_SIZE - 1);
                 SV check = COMMANDS[hash].name;
 
                 if (check.mem != NULL && sv_eq(command, check))
