@@ -7,7 +7,7 @@
 #include "sv.h"
 
 static IRC irc = {0};
-void sighandler(int);
+static void sighandler(int);
 
 int
 main(int argc, char **argv)
@@ -77,7 +77,7 @@ main(int argc, char **argv)
         return 0;
 }
 
-void
+static void
 sighandler(int sig)
 {
        printf("\n\nReceived sig(%d), freeing memory...\n", sig);
