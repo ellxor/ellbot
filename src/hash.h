@@ -15,5 +15,5 @@
 #define __hash_4(str) (str[3] + 33*__hash_3(str))
 #define __hash_5(str) (str[4] + 33*__hash_4(str))
 #define __hash_6(str) (str[5] + 33*__hash_5(str))
-#define __hash_7(str) (str[5] + 33*__hash_5(str))
-#define __hash_8(str) (str[5] + 33*__hash_5(str))
+#define __hash_7(str) (str[6] + 33*__hash_6(str))
+#define __hash_8(str) (str[7] + 33*__hash_7(str))
