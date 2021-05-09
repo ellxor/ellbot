@@ -1,4 +1,4 @@
-/// compile-time string hashing ///
+/// compile-time version of sv_hash (sv.c:144:1) ///
 
 #ifndef TBL_SIZE
 #error "`TBL_SIZE` has not been defined"
