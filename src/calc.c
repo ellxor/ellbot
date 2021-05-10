@@ -350,7 +350,8 @@ eval(SV expr, SV *err)
         static char mem[30];
         int len = 0;
 
-        if (fabs(v) < 1e15 && floor(v) == v) {
+        if (fabs(v) < 1e15 && floor(v) == v)
+        {
                 len = snprintf(mem, sizeof(mem), "%ld", (uint64_t)v);
         }
 
