@@ -192,8 +192,7 @@ rnd(IRC *irc, SV sender, SV args)
 
         if (count == 0)
         {
-                irc_send_message(irc,
-                        SV("error: `rand` expects 1-2 args\n"));
+                irc_send_message(irc, SV("error: `rand` expects 1-2 args\n"));
                 return;
         }
 
