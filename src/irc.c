@@ -9,7 +9,7 @@
 #include <netdb.h>
 #include <unistd.h>
 
-//===="TCP/IP"====//
+/// TCP/IP ///
 
 static int
 open_socket(struct addrinfo *info)
@@ -63,7 +63,7 @@ connect_socket(int *socket_ptr)
         return -1;
 }
 
-//===="OPENSSL"====//
+/// OPENSSL ///
 
 static IRC
 irc_from_socket(int *socket)
@@ -98,7 +98,7 @@ irc_from_socket(int *socket)
         return irc;
 }
 
-//===="IRC WRAPPERS"====//
+/// IRC WRAPPERS ///
 
 int
 irc_connect(IRC *irc)

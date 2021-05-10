@@ -17,7 +17,7 @@ typedef struct
         union { double d; char c; } value;
 } token_t;
 
-//===="QUEUE IMPLEMENTATION"====//
+/// QUEUE IMPLEMENTATION ///
 
 const int max_tok_count = 500;
 
@@ -48,7 +48,7 @@ peek(Q *queue)
         return queue->toks[queue->len-1];
 }
 
-//===="PARSER IMPLEMENTATION"====//
+/// PARSER IMPLEMENTATION ///
 
 static size_t
 parse_token(SV *sv, token_t *tok)
@@ -193,7 +193,7 @@ check_tokens(token_t *toks, int len, SV *err)
         return 0;
 }
 
-//===="CALC ENGINE"====//
+/// CALCULATOR ENGINE ///
 
 static int
 prec(token_t tok)
@@ -308,7 +308,7 @@ evaluate(Q *toks)
         assert(0 && "unreachable!");
 }
 
-//===="WRAPPER"====//
+/// WRAPPER ///
 
 SV
 eval(SV expr, SV *err)
