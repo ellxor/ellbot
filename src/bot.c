@@ -1,7 +1,7 @@
 #include "bot.h"
 #include "calc.h"
 
-#define TBL_SIZE 64
+#define TBL_SIZE 32
 #include "hash.h"
 
 #include <assert.h>
