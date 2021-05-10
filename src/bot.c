@@ -127,8 +127,7 @@ wttr(IRC *irc, SV sender, SV arg)
 
         if (arg.count == 0)
         {
-                irc_send_message(irc,
-                        SV("error: `wttr` expects 1 arg\n"));
+                irc_send_message(irc, SV("error: `wttr` expects 1 arg\n"));
                 return;
         }
 
@@ -146,13 +145,16 @@ wttr(IRC *irc, SV sender, SV arg)
                                 break;
 
                         default:
+                                irc_send_messages(irc, 3, SV("error: invalid char `"),
+                                                          sv_from(&arg.mem[i], 1),
+                                                          SV("` in location\n"));
                                 goto clean_up;
                         }
                 }
 
                 char url[100] = {0};
-                snprintf(url, sizeof(url),
-                         "https://wttr.in/%.*s?format=4", sv_arg(arg));
+                snprintf(url, sizeof(url), "https://wttr.in/%.*s?format=4",
+                         sv_arg(arg));
 
                 SV data = {0};
 
