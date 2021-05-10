@@ -19,7 +19,7 @@ static void cmds(), date(), rnd(), src(), ping(),
             wttr(), calc();
 
 
-static_assert(TBL_SIZE != 0 && (TBL_SIZE & (TBL_SIZE-1)) == 0,
+static_assert(TBL_SIZE > 0 && (TBL_SIZE & (TBL_SIZE-1)) == 0,
               "`TBL_SIZE` must be a power of two");
 
 static struct command
