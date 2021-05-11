@@ -11,12 +11,14 @@
 #define PORT "6697"
 #define ADDR HOST":"PORT
 
-typedef struct
+typedef struct IRC IRC;
+
+struct IRC
 {
         int socket;
         SSL *ssl;
         SV channel;
-} IRC;
+};
 
 int irc_connect(IRC *irc);
 void irc_disconnect(IRC *irc);

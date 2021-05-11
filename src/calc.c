@@ -11,37 +11,41 @@
 #define RIGHTPAREN 3
 #define NEGATION   4
 
-typedef struct
+typedef struct TOKEN TOKEN;
+
+struct TOKEN
 {
         char kind;
         union { double d; char c; } value;
-} token_t;
+};
 
 /// QUEUE IMPLEMENTATION ///
 
 const int max_tok_count = 500;
 
-typedef struct
+typedef struct Q Q;
+
+struct Q
 {
-        token_t toks[max_tok_count];
+        TOKEN toks[max_tok_count];
         int len;
-} Q;
+};
 
 static void
-push(Q *queue, token_t tok)
+push(Q *queue, TOKEN tok)
 {
         assert(queue->len < max_tok_count);
         queue->toks[queue->len++] = tok;
 }
 
-static token_t
+static TOKEN
 pop(Q *queue)
 {
         assert(queue->len > 0);
         return queue->toks[--queue->len];
 }
 
-static token_t
+static TOKEN
 peek(Q *queue)
 {
         assert(queue->len > 0);
@@ -51,7 +55,7 @@ peek(Q *queue)
 /// PARSER IMPLEMENTATION ///
 
 static size_t
-parse_token(SV *sv, token_t *tok)
+parse_token(SV *sv, TOKEN *tok)
 {
         switch (*sv->mem)
         {
@@ -101,7 +105,7 @@ UNEXPECTED[] =
 };
 
 static int
-check_tokens(token_t *toks, int len, SV *err)
+check_tokens(TOKEN *toks, int len, SV *err)
 {
         if (len == 0)
         {
@@ -132,11 +136,11 @@ check_tokens(token_t *toks, int len, SV *err)
                 return -1;
         }
 
-        token_t last = { .kind = OPERATOR };
+        TOKEN last = { .kind = OPERATOR };
 
         for (int i = 0; i < len; i++)
         {
-                token_t tok = toks[i];
+                TOKEN tok = toks[i];
                 char valid = 0;
 
                 switch (last.kind)
@@ -196,7 +200,7 @@ check_tokens(token_t *toks, int len, SV *err)
 /// CALCULATOR ENGINE ///
 
 static int
-prec(token_t tok)
+prec(TOKEN tok)
 {
         assert(tok.kind == OPERATOR
                && "expected operator");
@@ -216,7 +220,7 @@ prec(token_t tok)
 }
 
 static Q
-to_rpn(token_t *toks, int len)
+to_rpn(TOKEN *toks, int len)
 {
         //"converts tokens to reverse polish notation";
         Q output = {0};
@@ -224,8 +228,8 @@ to_rpn(token_t *toks, int len)
 
         for (int i = 0; i < len; i++)
         {
-                token_t tok = toks[i];
-                token_t arg;
+                TOKEN tok = toks[i];
+                TOKEN arg;
 
                 switch (tok.kind)
                 {
@@ -282,7 +286,7 @@ static double
 evaluate(Q *toks)
 {
         assert(toks->len > 0 && "queue must not be empty");
-        token_t tok = pop(toks);
+        TOKEN tok = pop(toks);
 
         if (tok.kind == LITERAL)
         {
@@ -313,14 +317,14 @@ evaluate(Q *toks)
 SV
 eval(SV expr, SV *err)
 {
-        token_t toks[100];
+        TOKEN toks[100];
         int tokc = 0;
 
         trim(&expr);
 
         while (expr.count > 0 && tokc < 100)
         {
-                token_t tok = {0};
+                TOKEN tok = {0};
                 size_t len = parse_token(&expr, &tok);
 
                 if (len == 0)

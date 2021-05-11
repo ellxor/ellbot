@@ -1,4 +1,5 @@
 /// compile-time version of sv_hash (sv.c:144:1) ///
+#pragma once
 
 #ifndef TBL_SIZE
 #error `TBL_SIZE` has not been defined

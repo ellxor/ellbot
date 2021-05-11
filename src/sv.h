@@ -3,12 +3,15 @@
 #include <stdint.h>
 #include <string.h>
 
-typedef struct {
+typedef struct SV SV;
+
+struct SV
+{
         const char *mem;
         int count;
-} SV;
+};
 
-#define SV(str) ((SV) { .mem = (str), .count = sizeof(str)-1 })
+#define SV(str) (SV) {.mem=str, .count=sizeof(str)-1}
 #define sv_arg(sv) (sv).count, (sv).mem 
 
 SV sv_from(const char *str, int count);

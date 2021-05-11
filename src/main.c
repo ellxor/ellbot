@@ -33,7 +33,7 @@ main(int argc, char **argv)
         {
                 fprintf(stderr, "Fatal Error: shutting down...\n");
                 exit(-1);
-        };
+        }
 
         irc.channel = sv_from(argv[1], strlen(argv[1]));
         irc_join(&irc, sv_from(nick, strlen(nick)),
