@@ -1,5 +1,5 @@
 SRC="src/*.c"
 LIB="-lssl -lcrypto -lcurl -lm"
-FLG="-O3 -s -Wall -Wextra -std=c2x"
+FLG="-O3 -s -Wall -Wextra"
 
 clang $SRC -o ellbot $LIB $FLG

@@ -258,7 +258,7 @@ to_rpn(TOKEN *toks, int len)
                         tok.kind = OPERATOR;
                         tok.value.c = '$';
 
-                        [[fallthrough]];
+                        __attribute((fallthrough));
 
                 case OPERATOR:
                         while (operators.len
