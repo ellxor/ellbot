@@ -57,9 +57,9 @@ cmds(IRC *irc, SV sender, SV arg)
         (void) arg;
 
         SV buff[64];
-        int len = 0;
+        size_t len = 0;
 
-        for (int i = 0; i < TBL_SIZE; i++)
+        for (size_t i = 0; i < TBL_SIZE; i++)
         {
                 SV name = COMMANDS[i].name;
 
@@ -71,19 +71,17 @@ cmds(IRC *irc, SV sender, SV arg)
 
         qsort(buff, len, sizeof(SV), sv_cmp);
 
-        char buffer[500];
+        const size_t buffer_size = 500;
+        char buffer[buffer_size];
         char *writer = buffer;
 
-        for (int i = 0; i < len; i++)
+        for (size_t i = 0; i < len; i++)
         {
-                writer += snprintf(writer,
-                                   500 - (writer - buffer),
-                                   "%.*s, ", sv_arg(buff[i])
-                                  );
+                size_t rem = buffer_size - (writer - buffer);
+                writer += snprintf(writer, rem, "%.*s, ", sv_arg(buff[i]));
         }
 
-        irc_send_message(irc,
-                sv_from(buffer, writer - buffer - 2));
+        irc_send_message(irc, sv_from(buffer, writer - buffer - 2));
 }
 
 static void
