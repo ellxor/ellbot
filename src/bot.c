@@ -51,11 +51,8 @@ validate_user(SV sender)
 }
 
 static void
-cmds(IRC *irc, SV sender, SV arg)
+cmds(IRC *irc, [[gnu::unused]] SV sender, [[gnu::unused]] SV arg)
 {
-        (void)sender;
-        (void)arg;
-
         SV buff[64];
         int len = 0;
 
@@ -87,20 +84,14 @@ cmds(IRC *irc, SV sender, SV arg)
 }
 
 static void
-ping(IRC *irc, SV sender, SV arg)
+ping(IRC *irc, [[gnu::unused]] SV sender, [[gnu::unused]] SV arg)
 {
-        (void)sender;
-        (void)arg;
-
         irc_send_message(irc, SV("pong"));
 }
 
 static void
-date(IRC *irc, SV sender, SV arg)
+date(IRC *irc, [[gnu::unused]] SV sender, [[gnu::unused]] SV arg)
 {
-        (void)sender;
-        (void)arg;
-
         time_t unix_time = time(NULL);
         const char *date = asctime(gmtime(&unix_time));
         irc_send_message(irc, sv_from(date, strlen(date)));
@@ -120,10 +111,8 @@ curl_callback(char *ptr, size_t size, size_t nmemb, void *data)
 
 
 static void
-wttr(IRC *irc, SV sender, SV arg)
+wttr(IRC *irc, [[gnu::unused]] SV sender, SV arg)
 {
-        (void)sender;
-
         if (arg.count == 0)
         {
                 irc_send_message(irc, SV("error: `wttr` expects 1 arg\n"));
@@ -169,10 +158,8 @@ wttr(IRC *irc, SV sender, SV arg)
 }
 
 static void
-rnd(IRC *irc, SV sender, SV args)
+rnd(IRC *irc, [[gnu::unused]] SV sender, SV args)
 {
-        (void)sender;
-
         SV arg = chop_by_delim(&args, ' ');
         uint32_t min = 0, max = 0, count = 0;
 
@@ -213,21 +200,15 @@ rnd(IRC *irc, SV sender, SV args)
 }
 
 static void
-src(IRC *irc, SV sender, SV arg)
+src(IRC *irc, [[gnu::unused]] SV sender, [[gnu::unused]] SV arg)
 {
-        (void)sender;
-        (void)arg;
-
         SV msg = SV("source code: https://github.com/ellxor/ellbot");
         irc_send_message(irc, msg);
 }
 
 static void
-calc(IRC *irc, SV sender, SV arg)
+calc(IRC *irc, [[gnu::unused]] SV sender, [[gnu::unused]] SV arg)
 {
-        (void)sender;
-        (void)arg;
-
         SV err = {0};
         SV res = eval(arg, &err);
 
