@@ -182,10 +182,8 @@ rnd(IRC *irc, SV sender, SV args)
 
                 if (!parse_ok)
                 {
-                        irc_send_messages(irc, 3,
-                                          SV("error: invalid int `"),
-                                          arg,
-                                          SV("`"));
+                        irc_send_messages(irc, 3, SV("error: invalid int `"),
+                                                  arg, SV("`"));
                         return;
                 }
 
@@ -207,7 +205,6 @@ rnd(IRC *irc, SV sender, SV args)
         int len = sprintf(buffer, "%d\n", s);
 
         irc_send_message(irc, sv_from(buffer, len));
-        return;
 }
 
 static void
