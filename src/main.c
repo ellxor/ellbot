@@ -1,13 +1,14 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdnoreturn.h>
 
 #include "bot.h"
 #include "irc.h"
 #include "sv.h"
 
 static IRC irc = {0};
-static void sighandler(int);
+static void noreturn sighandler(int);
 
 int
 main(int argc, char **argv)
@@ -73,8 +74,6 @@ main(int argc, char **argv)
                 }
         }
         while (1);
-
-        return 0;
 }
 
 static void
