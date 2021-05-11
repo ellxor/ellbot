@@ -129,7 +129,8 @@ sv_parse_uint(SV sv, bool *ok)
 
         for (int i = 0; i < sv.count; i++)
         {
-                char c = sv.mem[i];
+                uint32_t c = sv.mem[i];
+
                 if (!('0' <= c && c <= '9'))
                 {
                         *ok = false;
