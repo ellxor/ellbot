@@ -1,6 +1,7 @@
 #pragma once
-#include <string.h>
+#include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 typedef struct {
         const char *mem;
@@ -18,5 +19,5 @@ void trim(SV *sv);
 int sv_eq(SV a, SV b);
 int sv_cmp(const void *a, const void *b);
 int sv_expect(SV *sv, SV e);
-uint32_t sv_parse_uint(SV sv);
+uint32_t sv_parse_uint(SV sv, bool *ok);
 uint32_t sv_hash(SV sv);

@@ -178,7 +178,11 @@ rnd(IRC *irc, SV sender, SV args)
 
         while (arg.count > 0 && count < 2)
         {
-                if ((min = max, max = sv_parse_uint(arg)) == (uint32_t)-1)
+                bool parse_ok;
+                min = max;
+                max = sv_parse_uint(arg, &parse_ok);
+
+                if (!parse_ok)
                 {
                         irc_send_messages(irc, 3,
                                           SV("error: invalid int `"),

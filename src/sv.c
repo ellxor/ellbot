@@ -91,8 +91,8 @@ sv_eq(SV a, SV b)
 int
 sv_cmp(const void *a, const void *b)
 {
-        SV sa = *(SV *)a;
-        SV sb = *(SV *)b;
+        SV sa = *(const SV *)a;
+        SV sb = *(const SV *)b;
 
         int len = (sa.count < sb.count)
                 ? sa.count
@@ -123,7 +123,7 @@ sv_expect(SV *sv, SV e)
 }
 
 uint32_t
-sv_parse_uint(SV sv)
+sv_parse_uint(SV sv, bool *ok)
 {
         uint32_t res = 0;
 
@@ -132,12 +132,14 @@ sv_parse_uint(SV sv)
                 char c = sv.mem[i];
                 if (!('0' <= c && c <= '9'))
                 {
-                        return -1;
+                        *ok = false;
+                        return 0;
                 }
 
                 res = 10 * res + c - '0';
         }
 
+        *ok = true;
         return res;
 }
 
