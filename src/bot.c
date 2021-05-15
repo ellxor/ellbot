@@ -1,7 +1,7 @@
 #include "bot.h"
 #include "calc.h"
 
-#define TBL_SIZE 32
+#define TBL_SIZE 64
 #include "hash.h"
 
 #include <assert.h>
@@ -24,13 +24,13 @@ static_assert(TBL_SIZE > 0 && (TBL_SIZE & (TBL_SIZE-1)) == 0,
 static struct command
 COMMANDS[TBL_SIZE] =
 {
-        [constexpr_hash("cmds", 4)] = {.name = SV("cmds"), .action = cmds},
-        [constexpr_hash("date", 4)] = {.name = SV("date"), .action = date},
-        [constexpr_hash("rnd" , 3)] = {.name = SV("rnd") , .action = rnd },
-        [constexpr_hash("src" , 3)] = {.name = SV("src") , .action = src },
-        [constexpr_hash("ping", 4)] = {.name = SV("ping"), .action = ping},
-        [constexpr_hash("wttr", 4)] = {.name = SV("wttr"), .action = wttr},
-        [constexpr_hash("calc", 4)] = {.name = SV("calc"), .action = calc},
+        [constexpr_hash('cmds')] = {.name = SV("cmds"), .action = cmds},
+        [constexpr_hash('date')] = {.name = SV("date"), .action = date},
+        [constexpr_hash('rnd' )] = {.name = SV("rnd") , .action = rnd },
+        [constexpr_hash('src' )] = {.name = SV("src") , .action = src },
+        [constexpr_hash('ping')] = {.name = SV("ping"), .action = ping},
+        [constexpr_hash('wttr')] = {.name = SV("wttr"), .action = wttr},
+        [constexpr_hash('calc')] = {.name = SV("calc"), .action = calc},
 };
 
 static SV

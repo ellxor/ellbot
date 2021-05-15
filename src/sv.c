@@ -147,12 +147,19 @@ sv_parse_uint(SV sv, bool *ok)
 uint32_t
 sv_hash(SV sv)
 {
-        uint32_t hash = 0x1505;
+        uint32_t hash = 0;
 
-        for (int i = 0; i < sv.count; i++)
+        if (sv.count > 4)
+                sv.count = 4;
+
+        for (int i = 0; i < sv.count; ++i)
         {
-                hash = 33*hash + sv.mem[i];
+               hash = (hash << 8) | sv.mem[i];
         }
+
+        hash = hash ^ (hash << 13);
+        hash = hash ^ (hash >> 17);
+        hash = hash ^ (hash <<  5);
 
         return hash;
 }
