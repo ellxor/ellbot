@@ -8,7 +8,7 @@
 #include "sv.h"
 
 static IRC irc = {0};
-static void noreturn sighandler(int);
+noreturn static void sighandler(int sig);
 
 int
 main(int argc, char **argv)
