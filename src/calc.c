@@ -21,20 +21,20 @@ struct TOKEN
 
 /// QUEUE IMPLEMENTATION ///
 
-const int max_tok_count = 500;
+#define MAX_TOK_COUNT 500
 
 typedef struct Q Q;
 
 struct Q
 {
-        TOKEN toks[max_tok_count];
+        TOKEN toks[MAX_TOK_COUNT];
         int len;
 };
 
 static void
 push(Q *queue, TOKEN tok)
 {
-        assert(queue->len < max_tok_count);
+        assert(queue->len < MAX_TOK_COUNT);
         queue->toks[queue->len++] = tok;
 }
 
