@@ -9,6 +9,10 @@
 #include <netdb.h>
 #include <unistd.h>
 
+#ifndef IPPROTO_TCP
+#include <linux/in.h>
+#endif
+
 /// TCP/IP ///
 
 static int
