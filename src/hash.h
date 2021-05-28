@@ -5,7 +5,9 @@
 #error `TBL_SIZE` has not been defined
 #endif
 
-#define constexpr_hash(str) (xorshift(((long)str)) & (TBL_SIZE-1))
+#include <stdint.h>
+
+#define constexpr_hash(str) (xorshift((uint32_t)str) & (TBL_SIZE-1))
 
 #define shift1(x) (x ^ (x << 13))
 #define shift2(x) (x ^ (x >> 17))
