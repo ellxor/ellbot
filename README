@@ -6,3 +6,5 @@ respectively.
 
                                   dependencies
                          libc, libcurl, openssl, posix
+
+[warning: this repo is unmaintained and likely unsafe - use at your own risk]
